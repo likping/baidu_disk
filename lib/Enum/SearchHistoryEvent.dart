@@ -1,0 +1,1 @@
+enum SearchHistoryEvent{insert,delete,clear,search}
