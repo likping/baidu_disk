@@ -8,8 +8,11 @@ class PathUtils{
   static String dirname(String path){
             var paths=path.split("/");
             var subPath=paths.sublist(0,paths.length-1);
-
-             return subPath.join("/");
+            var dir=subPath.join("/");
+            if(dir.length==0){
+              return "/";
+            }
+            return dir;
   }
   static String join(String a,String b){
               List<String>path=[a,b];

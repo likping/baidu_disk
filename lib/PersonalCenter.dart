@@ -1,22 +1,48 @@
 import 'package:flutter/material.dart';
+import "./BdDiskApiClient.dart";
+import "./BdDiskUser.dart";
+import "./BdDiskQuota.dart";
+import "dart:math";
 class PersonalCenter extends StatefulWidget{
+  final BdDiskApiClient apiClient=BdDiskApiClient();
   State createState(){
     return  _PersonalCenterState();
   }
 }
 class _PersonalCenterState extends State<PersonalCenter>{
   //个人头像+进度条
+  BdDiskUser userInfo;
+  BdDiskQuota quota;
+  _resquestUserInfo()async{
+
+       widget.apiClient.getUserInfo().then((e){
+            setState(() {
+              userInfo=e;
+            });
+       });
+       widget.apiClient.getDiskQuota().then((e){
+           setState(() {
+             print(e);
+             quota=e;
+           });
+       });
+  }
+  initState(){
+    _resquestUserInfo();
+  }
   Widget _PersonalWidget(){
     return new Container(
         height:75,
-        padding: EdgeInsets.only(left: 20,top: 20),
+        padding: EdgeInsets.only(left: 20,top: 25),
         child:new Row(
           children: <Widget>[
-            Image.asset("assets/swan_app_user_portrait_pressed.png"),
+            userInfo==null
+                ?Image.asset("assets/swan_app_user_portrait_pressed.png")
+                :Image.network(userInfo.avatarUrl),
             new Expanded(
                 child:  new Column(children: <Widget>[
                   new Row(children:<Widget>[
-                    Text("poingj"),
+                    Text( userInfo==null?"xxxx":userInfo.baiduName),
                     new SizedBox(
                       height: 20,
                       child: Image.asset("assets/home_identity_common.png"),
@@ -29,13 +55,13 @@ class _PersonalCenterState extends State<PersonalCenter>{
                     child: new ClipRRect(
                       borderRadius:BorderRadius.all(Radius.circular(10.0)),
                       child:new LinearProgressIndicator(
-                        value: 0.3,
+                        value:(quota.ratio),
                         backgroundColor:Colors.grey,
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                       ),
                     ),
                   ),
-                  new Text("1266GB/2055GB")
+                  new Text("${(quota.used/pow(2,30)).floor()}/${(quota.total/pow(2,30)).floor()} G")
 
 
                 ],

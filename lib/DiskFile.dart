@@ -19,5 +19,16 @@ class DiskFile{
     this.size=0,
     this.isDir=1,
     this.category=6
-  });
+    });
+    DiskFile.fromJson(json){
+     path=json["path"];
+     server_filename=json["server_filename"];
+     server_ctime=json["server_ctime"];
+     size=json["size"];
+     isDir=json["isdir"];
+     category=json["category"];
+   }
+   toJson(){
+
+   }
 }

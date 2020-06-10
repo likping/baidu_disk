@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import "package:shared_preferences/shared_preferences.dart";
 import "./Constant.dart";
 import "package:permission_handler/permission_handler.dart";
+import "package:flutter_webview_plugin/flutter_webview_plugin.dart";
+import 'package:flutter/cupertino.dart';
+import "dart:async";
+import "./BdOAuth2Token.dart";
 class LoginPage extends StatefulWidget {
+  final BdOAuth2Token bdOAuth2Token=new BdOAuth2Token("");
   State createState() {
     //创建状态类表
-    return _LoginPageState();
+//    return _LoginPageState();
+  return _LoginWebPagesState();
   }
 }
 class _LoginPageState extends State<LoginPage> {
@@ -245,5 +251,39 @@ class _LoginPageState extends State<LoginPage> {
                 ]),
               ],
             ))));
+  }
+}
+class _LoginWebPagesState extends State<LoginPage>{
+  final String response_type="token";
+  final String client_id="ipklV4jKGNXjSDeBObPXmFAqG4ukKyGY";
+  final String redirect_uri="oob";
+  final String scope="basic,netdisk";
+  final String display="popup";
+  final String state="";
+  StreamSubscription<String> _onUrlChanged;
+  final flutterWebviewPlugin = new FlutterWebviewPlugin();
+
+  void dispose() {
+    //销毁web view
+    _onUrlChanged.cancel();
+    super.dispose();
+  }
+
+  Widget build(BuildContext context){
+    _onUrlChanged=flutterWebviewPlugin.onUrlChanged.listen((url) {
+
+      widget.bdOAuth2Token.checkoAuth2Result(context,url);
+    });
+      return new WebviewScaffold(
+          appBar: new AppBar(
+              title:new Text("欢迎来到百度用户授权登录")
+          ),
+          url: "https://openapi.baidu.com/oauth/2.0/authorize?response_type=$response_type&client_id=$client_id&redirect_uri=$redirect_uri&scope=$scope&display=$display&state=$state",
+          initialChild: Container(
+              color: Colors.white,
+              child: Center(
+                  child: Text('waiting...'),
+          ))
+      );
   }
 }

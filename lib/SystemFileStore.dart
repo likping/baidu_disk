@@ -45,6 +45,7 @@ class SystemFileStore implements FileStore{
   /*todo 递归寻找关键字出现一些问题，应该是迭代异步问题*/
    void SearchFiles(file,int count,int start,int num,Completer _diskFileComplete,String key,List<DiskFile> diskFiles)async{
      var fileName=PathUtils.basename(file.path);
+     /*
      if(file.path!=null&&(fileName.substring(0,1)!=".")&&!fileName.contains(".")&&!fileName.toLowerCase().contains(key.toLowerCase())){
          Directory directory=Directory(file.path);
          var listOfFiles=directory.list(recursive:false);
@@ -60,6 +61,7 @@ class SystemFileStore implements FileStore{
          );
          await _diskFileComplete.future;
      }
+     */
      if(file.path==null||(fileName.substring(0,1)==".")|| !fileName.toLowerCase().contains(key.toLowerCase())||
          count++<start
      ) return;
